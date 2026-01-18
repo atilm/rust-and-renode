@@ -1,0 +1,21 @@
+[package]
+name = "nucleo-project"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+opt-level = 'z'   # turn on maximum optimizations.
+lto = true        # Link-time-optimizations for further size reduction
+codegen-units = 1
+debug = true
+
+[dependencies]
+cortex-m = "0.7.7"      # Access to the generic ARM peripherals
+cortex-m-rt = "0.7.3"   # Startup code for the ARM Core
+embedded-hal = "1.0.0"  # Access to generic embedded functions (`set_high`)
+panic-halt = "0.2.0"    # Panic handler
+
+[dependencies.stm32f1xx-hal]
+version = "0.8.0"
+features = ["stm32f103", "rt", "medium"]
+

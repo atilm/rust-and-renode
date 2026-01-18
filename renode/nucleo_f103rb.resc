@@ -1,0 +1,26 @@
+# Renode script for STM32 NUCLEO-F103RB
+# Loads the board platform and your Rust-built ELF.
+
+using sysbus
+
+mach create "nucleo_f103rb"
+
+# Load the STM32F103 SoC description directly from a local copy.
+# Place cpu .repl under ./renode/platforms/cpus/
+machine LoadPlatformDescription @./renode/platforms/boards/nucleo_f103rb.repl
+
+# Load the firmware ELF built by cargo (adjust to release if you built --release)
+sysbus LoadELF @nucleo-project/target/thumbv7m-none-eabi/debug/nucleo-project
+
+set osPanicHook
+"""
+self.ErrorLog("OS Panicked")
+"""
+cpu0 AddSymbolHook "z_fatal_error" $osPanicHook
+
+# If your firmware uses UART (e.g., USART2), you can enable an analyzer interactively:
+showAnalyzer sysbus.usart2
+
+logLevel -1 gpioa.greenled2
+
+start
