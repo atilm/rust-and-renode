@@ -50,11 +50,13 @@ fn main() -> ! {
             if led_state {
                 led.set_high();
                 for byte in led_toogled.iter() {
+                    while ! tx.is_tx_empty() {}
                     let _ = tx.write(*byte);
                 }
             } else {
                 led.set_low();
                 for byte in led_toogled.iter() {
+                    while ! tx.is_tx_empty() {}
                     let _ = tx.write(*byte);
                 }
             }

@@ -1,7 +1,7 @@
 
 [target.thumbv7m-none-eabi]
-# runner = "arm-none-eabi-gdb"
-runner = "gdb-multiarch -q -x ./.gdbinit"
+runner = "probe-rs run --chip STM32F103RB"
+
 rustflags = [
     "-C", "link-arg=-Tlink.x",
     # If you run into problems with LLD, switch to the GNU linker by commenting out
