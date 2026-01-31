@@ -2,26 +2,34 @@
 
 ## Machine setup
 
-* `sudo apt-get install gdb-multiarch openocd`
-* Add rule to use ST-Link without root privileges:
-    * Connect ST-Link and execute `lsusb`
-        * Output: `Bus 003 Device 003: ID 0483:374b STMicroelectronics ST-LINK/V2.1`
-        * Note `idVendor: 0483` and `idProduct:374b`
-    * Create `/etc/udev/rules.d/99-openocd.rules` with content
+### Install `probe-rs` 
+
+and add the rules file `/etc/udev/rules.d/69-probe-rs.rules`
+for your ST-LINK
+
+E.g. for ST-LINK V2:
+
 ```
-# STM32F3DISCOVERY - ST-LINK/V2.1
-ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", MODE:="0666"
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", MODE="660", GROUP="plugdev", TAG+="uaccess"
 ```    
-    * sudo udevadm control --reload-rules
+* Run `sudo udevadm control --reload` to ensure the new rules are used.
+* Run `sudo udevadm trigger` to ensure the new rules are applied to already added devices.
 
 * `rustup target add thumbv7m-none-eabi` (Add Rust ARM Cortex-M3 build target)
 
+### Install cargo-embassy
+
+`cargo install cargo-embassy`
+
+A tool to set up an embassy project with
+
+`cargo embassy init <project-name> --chip <your chip>`
+
+Find supported chips with `probe-rs chip list`
+
 ## Flashing and Debugging
 
-* Start openocd server in a terminal: `openocd -f interface/stlink.cfg -f target/stm32f1x.cfg`
-* cargo run
-or
-    * Start debugger manually: `gdb-multiarch -q -ex "target remote :3333" target/thumbv7m-none-eabi/debug/cortex-m-quickstart`
+cargo run
 
 ## Renode setup
 
