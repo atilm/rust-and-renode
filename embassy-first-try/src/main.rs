@@ -15,6 +15,10 @@ use embassy_time::{Duration, Timer};
 use fmt::info;
 use dht11::Dht11;
 
+use embedded_hal::{
+    delay::DelayNs
+};
+
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = embassy_stm32::init(Default::default());
@@ -23,20 +27,33 @@ async fn main(_spawner: Spawner) {
     // Set up DHT11 temperature and humidity sensor
     let mut dht11_data = Flex::new(p.PA0);
     dht11_data.set_as_input_output(Speed::Low);
-    let mut dht11 = Dht11::new(dht11_data);
+    // let mut dht11 = Dht11::new(dht11_data);
 
     let mut delay = embassy_time::Delay;
 
     loop {
-        info!("Hello, World!");
-        match dht11.perform_measurement(&mut delay) {
-            Ok(measurement) => {
-                info!("Temperature: {}°C, Humidity: {}%", measurement.temperature, measurement.humidity);
-            }
-            Err(_e) => {
-                info!("Failed to read from DHT11 sensor.");
-            }
-        }
+        dht11_data.set_low();
+        delay.delay_ms(20);
+
+        // Restore floating
+        dht11_data.set_high();
+        delay.delay_us(30);
+        dht11_data.set_low();
+        delay.delay_us(60);
+        dht11_data.set_high();
+        // let result = dht11.perform_measurement(&mut delay);
+        // match result {
+        //     Ok(measurement) => {
+        //         info!("Temperature: {}°C, Humidity: {}%", measurement.temperature, measurement.humidity);
+        //     }
+        //     Err(_e) => {
+        //         match _e {
+        //             dht11::Error::Timeout => info!("DHT11 sensor timeout."),
+        //             dht11::Error::CrcMismatch => info!("DHT11 checksum error."),
+        //             _ => info!("DHT11 GPIO error."),
+        //         }
+        //     }
+        // }
         led.set_high();
         Timer::after(Duration::from_millis(500)).await;
         led.set_low();
