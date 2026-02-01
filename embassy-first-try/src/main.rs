@@ -55,9 +55,11 @@ async fn main(_spawner: Spawner) {
 
         // Restore floating
         dht11_data.set_high();
-        delay.delay_us(5);
+        cortex_m::asm::delay(80); 
+        // delay.delay_us(5);
         dht11_data.set_low();
-        delay.delay_us(1);
+        cortex_m::asm::delay(8); 
+        // delay.delay_us(1);
         dht11_data.set_high();
         // let result = dht11.perform_measurement(&mut delay);
         // match result {
