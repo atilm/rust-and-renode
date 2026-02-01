@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "preLaunchTask": "${defaultBuildTask}",
+      "type": "probe-rs-debug",
+      "request": "launch",
+      "name": "Launch Embassy First Try",
+      "flashingConfig": {
+        "flashingEnabled": true,
+      },
+      //!MODIFY
+      "chip": "STM32F103RB",
+      "coreConfigs": [
+        {
+          //!MODIFY
+          "programBinary": "target/thumbv7m-none-eabi/debug/embassy-first-try"
+        }
+      ]
+    }
+  ]
+}
